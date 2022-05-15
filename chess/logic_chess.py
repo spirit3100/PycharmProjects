@@ -64,12 +64,13 @@ def show_desk(desk):
 
 def find_figure(desk, cage):
 
-    s = blank_desk()
-    x_y = s.get(cage)
-    get_figure = desk.get(cage)[1]
-    cage_x_y = cage, x_y[0]
-    step = figures_w_b.get(get_figure)[2]()(desk, cage_x_y)
-    return desk, step
+    step_modify = []
+    get_figure = desk.get(cage)
+    cage_x_y = cage, get_figure[0]
+    step = figures_w_b.get(get_figure[1])[2]()(desk, cage_x_y)
+    [step_modify.append(i) for i in step if get_figure[3] != desk.get(i)[3]]
+
+    return desk, step_modify
 
 def find(list_s, y):
 
