@@ -1,7 +1,6 @@
 from func_figures import *
 from data_chess import *
 
-
 figures_w_b = {'king': (9818, 9812, lambda: king),
             'queen': (9819, 9813, lambda: queen),
             'bishop': (9821, 9815, lambda: bishop),
@@ -26,21 +25,23 @@ def filling_desk(desk, rowFig, rowPawns, color = 0):
 
     return desk
 
-def update_desk(desk, first, steps):
+def update_desk(desk, steps):
 
     global player_step
-    if first == 'black': player_step = color_figure[0]
-    elif first == 'white': player_step = color_figure[1]
     step_A, step_B = steps
     if step_A != step_B:
-        if first == 'white':
+        if player_step == 'white':
             if desk.get(step_B)[2] != '  ':
                 broken_pieces[0].append(desk.get(step_B)[2])
-        elif first == 'black':
+        elif player_step == 'black':
             if desk.get(step_B)[2] != '  ':
                 broken_pieces[1].append(desk.get(step_B)[2])
         desk[step_B] = (desk.get(step_B)[0], desk.get(step_A)[1], desk.get(step_A)[2], desk.get(step_A)[3])
         desk[step_A] = (desk[step_A][0], None, '  ', None)
+    if player_step == 'black':
+        player_step = color_figure[0]
+    elif player_step == 'white':
+        player_step = color_figure[1]
     if broken_pieces[0]: print(f'white user {broken_pieces[0]}')
     if broken_pieces[1]: print(f'black user {broken_pieces[1]}')
     show_desk(desk)
@@ -68,7 +69,9 @@ def find_figure(desk, cage):
     get_figure = desk.get(cage)
     cage_x_y = cage, get_figure[0]
     step = figures_w_b.get(get_figure[1])[2]()(desk, cage_x_y)
+    # print(f'steps: {step}')
     [step_modify.append(i) for i in step if get_figure[3] != desk.get(i)[3]]
+    # print(f'modify: {step_modify}')
 
     return desk, step_modify
 

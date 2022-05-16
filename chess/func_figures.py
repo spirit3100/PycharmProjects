@@ -17,67 +17,47 @@ def knight(desk, cage_x_y):
 
     return find_permission(steps)
 
-def find_permission(list_x_y):
+def find_permission(list_x_y, reverse=0):
 
     blank_d = blank_desk()
     new_l = []
     l = []
+    # print(f'list: {list_x_y}')
     [l.append(i) for i in list_x_y if i[0] >= 0 and i[0] <= 7 and i[1] >= 0 and i[1] <= 7]
     [new_l.append(i) for i, k in blank_d.items() if k[0] in l]
-
+    if reverse == -1: new_l.reverse()
+    # print(f'new l: {new_l}')
     return new_l
 
 def rook(desk, cage_x_y):
 
+    step = []
     x = cage_x_y[1]
-    a = []
-    b = []
-    cc = []
-    d = []
-    # for i in range(0, 8):
-    #
-    #     c = x[0] + i
-    #     v = x[1]
-    #     if c > 0 and c < 8:
-    #         a.append((c, v))
-    #     c = x[0]
-    #     v = x[1] + i
-    #     if v > 1 and v < 8:
-    #         b.append((c, v))
+    f = ((0, 1, 0),(0, -1, -1),(1, 0, 0),(-1, 0, -1))
+    def find_pos(desk, b=0, c=0, d=0):
+        new_list = []
+        modify_list = []
+        a = 0
+        a2 = 0
+        for i in range(1, 8):
+            a += b
+            a2 += c
+            new_list.append((x[0] + a, x[1] + a2))
+        if d == -1: list = find_permission(new_list, reverse=-1)
+        else: list = find_permission(new_list)
+        for i in list:
+            if desk.get(i)[1] != None:
+                modify_list.append(i)
+                break
+            else:
+                modify_list.append(i)
 
-    # for i, k in desk.items():
-    #     if k[1] != None:
-    #         print(f'i: {k[1]}')
-    #         b = i
-    #         break
-    #     else: b.append(i)
-    # print(f'b {b}')
-    # # for i in range(-8, 0):
-    # #     c = x[0] + i
-    # #     v = x[1]
-    # #     if c > 0 and c < 8:
-    # #         cc.append((c,v))
-    # #     c = x[0]
-    # #     v = x[1] + i
-    # #     if v > 0 and v < 8:
-    # #         d.append((c,v))
-    # print(a)
-    # print(b)
-    # print(cc)
-    # print(d)
-    # bb = []
-    # for i in desk:
-    #     v = desk.get(i)
-    #     if desk.get(i):
-    #         # print(desk.get(i))
-    #         bb.append(i)
-    # print(f'get fig: {[desk.get(i)[2] for i in a]}')
-    # print(f'b: {bb}')
-    # print(f'\ncage: {cage_x_y[0]}')
-    # print(f'x_y: {cage_x_y[1]}')
-    # print(f'steps: {a}\n')
+        return modify_list
 
-    # return find_permission(a)
+    for i in f: step.extend(find_pos(desk, b=i[0], c=i[1], d=i[2]))
+    # print(f's4 {step}')
+
+    return step
 
 def bishop(desk, cage_x_y):
 
