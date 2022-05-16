@@ -26,57 +26,63 @@ def find_permission(list_x_y, reverse=0):
     [l.append(i) for i in list_x_y if i[0] >= 0 and i[0] <= 7 and i[1] >= 0 and i[1] <= 7]
     [new_l.append(i) for i, k in blank_d.items() if k[0] in l]
     if reverse == -1: new_l.reverse()
-    # print(f'new l: {new_l}')
+    print(f'new l: {new_l}')
     return new_l
 
 def rook(desk, cage_x_y):
 
-    step = []
-    x = cage_x_y[1]
     f = ((0, 1, 0),(0, -1, -1),(1, 0, 0),(-1, 0, -1))
-    def find_pos(desk, b=0, c=0, d=0):
-        new_list = []
-        modify_list = []
-        a = 0
-        a2 = 0
-        for i in range(1, 8):
-            a += b
-            a2 += c
-            new_list.append((x[0] + a, x[1] + a2))
-        if d == -1: list = find_permission(new_list, reverse=-1)
-        else: list = find_permission(new_list)
-        for i in list:
-            if desk.get(i)[1] != None:
-                modify_list.append(i)
-                break
-            else:
-                modify_list.append(i)
+    steps = find(desk, cage_x_y, f, 'rook')
 
-        return modify_list
-
-    for i in f: step.extend(find_pos(desk, b=i[0], c=i[1], d=i[2]))
-    # print(f's4 {step}')
-
-    return step
+    return steps
 
 def bishop(desk, cage_x_y):
 
-    def find(list_s, x_y, int_1, int_2):
+    f = ((1, 1, 0), (-1, -1, -1), (-1, 1, -1), (1, -1, 0))
+    steps = find(desk, cage_x_y, f, 'bishop')
 
-        x, y = x_y
-        for i in range(8):
-            x += int_1
-            y += int_2
-            list_s.append((x, y))
+    return steps
 
-        return list_s
+def find(desk, cage_x_y, f, fig):
 
-    x_y = cage_x_y[1]
     steps = []
-    x = ((1,1), (-1,-1), (-1,1), (1,-1))
-    for i in x: steps = find(steps, x_y, i[0], i[1])
+    x_y = cage_x_y[1]
+    print(f'x_y: {x_y}')
 
-    return find_permission(steps)
+    def find_pos(desk, a=0, b=0, c=0):
+
+        new_list = []
+        if fig == 'rook': x = y = 0
+        else: x, y = x_y
+        for i in range(1, 8):
+            x += a
+            y += b
+            if fig == 'rook':
+                new_list.append((x_y[0] + x, x_y[1] + y))
+            elif fig == 'bishop':
+                new_list.append((x, y))
+
+        return add_find_perm(desk, new_list, c)
+
+    for i in f: steps.extend(find_pos(desk, a=i[0], b=i[1], c=i[2]))
+
+    return steps
+
+def add_find_perm(desk, new_list, d):
+
+    modify_list = []
+    if d == -1:
+        list = find_permission(new_list, reverse=-1)
+    else:
+        list = find_permission(new_list)
+    for i in list:
+        if desk.get(i)[1] != None:
+            modify_list.append(i)
+            break
+        else:
+            modify_list.append(i)
+
+    return modify_list
 
 def queen(desk, cage_x_y):
 
